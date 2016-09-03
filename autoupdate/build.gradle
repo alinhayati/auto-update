@@ -4,7 +4,7 @@ def devId = 'alinhayati'
 def devName = 'Ali Nemati Hayati'
 def devEmail = 'alinhayati@gmail.com'
 def libGroup = 'com.digigene.android'
-def libName = 'auto-update'
+def libName = 'autoupdate'
 def libDescription = 'Auto-update library for Android, which enables both forced and non-forced update'
 def libUrl = 'https://github.com/digigene/auto-update'
 def libGitUrl = "$libUrl" + ".git"
@@ -13,7 +13,7 @@ def licType = ["Apache-2.0"]
 def licUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 def majorNumber = 0
-def minorNumber = 2
+def minorNumber = 3
 def patchNumber = 0
 
 def _versionCode = 100 * majorNumber + 100 * minorNumber + patchNumber
