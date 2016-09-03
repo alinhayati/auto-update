@@ -88,8 +88,6 @@ public class DownloadCallBackFactory {
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
         intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + updateFileInfo.getFileName())), "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-//                notification.contentIntent = pendingIntent;
         context.startActivity(intent);
     }
 

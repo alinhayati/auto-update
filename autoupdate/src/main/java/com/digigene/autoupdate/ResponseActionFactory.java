@@ -24,16 +24,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
 public class ResponseActionFactory implements ResponseCallBack.Successful {
-    //    private final Context context;
-//    private Activity activity;
     private ResponseCallBack.Unsuccessful responseUnsuccessful;
-//    private HttpURLConnection httpURLConnection;
 
     public ResponseActionFactory(ResponseCallBack.Unsuccessful responseUnsuccessful) {
-//        this.context = context;
-//        this.activity = activity;
         this.responseUnsuccessful = responseUnsuccessful;
-//        this.httpURLConnection = httpURLConnection;
     }
 
     @Override

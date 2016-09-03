@@ -16,7 +16,6 @@ package com.digigene.autoupdate;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -102,13 +101,10 @@ public class ServerConnection {
             myURLConnection = setURLConnectionGetParams(myURLConnection, headerParams);
             myURLConnection.connect();
             return myURLConnection;
-//            responseCode = myURLConnection.getResponseCode();
-//            Response response = new Response(responseCode, );
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            System.out.println("Error in makeGetRequest:" + ex.getMessage());
         } finally {
             if (myURLConnection != null) {
                 try {

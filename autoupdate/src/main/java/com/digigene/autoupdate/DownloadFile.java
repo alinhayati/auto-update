@@ -49,8 +49,8 @@ public class DownloadFile extends AsyncTask<Void, Integer, Void> {
             httpURLConnection = ServerConnection.setURLConnectionGetParams(httpURLConnection, null);
             httpURLConnection.connect();
             int responseCode = httpURLConnection.getResponseCode();
-            if(!ServerConnection.isResponseSuccessful(responseCode)){
-                doWhenResponseIsUnsuccessful(httpURLConnection, responseCode);
+            if (!ServerConnection.isResponseSuccessful(responseCode)) {
+                doWhenResponseIsUnsuccessful(httpURLConnection);
             } else {
                 doWhenResponseIsSuccessful(httpURLConnection);
             }
@@ -92,8 +92,7 @@ public class DownloadFile extends AsyncTask<Void, Integer, Void> {
         }
     }
 
-    private void doWhenResponseIsUnsuccessful(HttpURLConnection httpURLConnection, int
-            responseCode) {
+    private void doWhenResponseIsUnsuccessful(HttpURLConnection httpURLConnection) {
         InputStream is;
         is = httpURLConnection.getErrorStream();
     }

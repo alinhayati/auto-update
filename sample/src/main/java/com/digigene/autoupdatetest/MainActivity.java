@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
                 .UpdateURLRequestParams() {
             @Override
             public String getURL() {
-                return "http://www.yourDomain.com/updateApp?currentVersion=" + BuildConfig
+                return "http://www.yourWhateverDomain.com/updateApp?currentVersion=" + BuildConfig
                         .VERSION_CODE;
             }
 
