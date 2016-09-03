@@ -28,6 +28,8 @@ import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import java.net.HttpURLConnection;
+
 public class UpdateRequest {
     private Notification notification;
     private NotificationManager notificationManager;
@@ -153,16 +155,19 @@ public class UpdateRequest {
     }
 
     private class GetUpdateInfoFromServer extends AsyncTask<Void, Void, Void> {
-        private Response response;
+        private HttpURLConnection httpURLConnection;
 
         @Override
         protected Void doInBackground(Void... aVoid) {
-            response = serverConnection.makeGetRequest();
+            httpURLConnection = serverConnection.makeGetRequest();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            Response response = new ResponseActionFactory(serverConnectionUpdateURLRequestParams
+                    .getResponseCallBackWhenUnsuccessful())
+                    .doWhenThisResponseCodeIsReturned(httpURLConnection, context, activity);
             if (ServerConnection.isResponseSuccessful(response.getResponseCode())) {
                 UpdateFileInfo updateFileInfo = new UpdateFileInfo(context, response);
                 if (updateFileInfo.getVersionNumber() > BuildConfig.VERSION_CODE) {

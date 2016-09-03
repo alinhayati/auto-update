@@ -18,24 +18,23 @@ import android.app.Activity;
 import android.content.Context;
 
 import java.net.HttpURLConnection;
-import java.util.Map;
 
 public interface ResponseCallBack {
     interface Successful {
-        Response doWhenResponseCodeIs2xx(HttpURLConnection httpURLConnection, int responseCode);
+        Response doWhenResponseCodeIs2xx(HttpURLConnection httpURLConnection);
     }
 
     interface Unsuccessful {
-        Response doWhenResponseCodeIs1xx(Context context, Activity activity, Map<String, String>
-                headerParams, String serviceURL, int responseCode);
+        Response doWhenResponseCodeIs1xx(Context context, Activity activity, HttpURLConnection
+                httpURLConnection);
 
-        Response doWhenResponseCodeIs3xx(Context context, Activity activity, Map<String, String>
-                headerParams, String serviceURL, int responseCode);
+        Response doWhenResponseCodeIs3xx(Context context, Activity activity, HttpURLConnection
+                httpURLConnection);
 
-        Response doWhenResponseCodeIs4xx(Context context, Activity activity, Map<String, String>
-                headerParams, String serviceURL, int responseCode);
+        Response doWhenResponseCodeIs4xx(Context context, Activity activity, HttpURLConnection
+                httpURLConnection);
 
-        Response doWhenResponseCodeIs5xx(Context context, Activity activity, Map<String, String>
-                headerParams, String serviceURL, int responseCode);
+        Response doWhenResponseCodeIs5xx(Context context, Activity activity, HttpURLConnection
+                httpURLConnection);
     }
 }

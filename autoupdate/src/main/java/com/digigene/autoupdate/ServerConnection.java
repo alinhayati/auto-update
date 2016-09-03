@@ -46,7 +46,7 @@ public class ServerConnection {
     private final UpdateURLRequestParams updateURLRequestParams;
     private String updateRequestURL;
     private Map<String, String> headerParams;
-    private ResponseCallBack.Unsuccessful stUnsuccessful;
+    private ResponseCallBack.Unsuccessful responseUnsuccessful;
 
     public ServerConnection(Context context, Activity activity, UpdateURLRequestParams
             updateURLRequestParams) {
@@ -55,7 +55,10 @@ public class ServerConnection {
         this.updateURLRequestParams = updateURLRequestParams;
         headerParams = updateURLRequestParams.getHeaderParams();
         updateRequestURL = updateURLRequestParams.getURL();
-        stUnsuccessful = updateURLRequestParams.getResponseCallBackWhenUnsuccessful();
+        if ((updateRequestURL == null) || (updateRequestURL.trim() == "")) {
+            throw new RuntimeException("Update URL address is invalid");
+        }
+        responseUnsuccessful = updateURLRequestParams.getResponseCallBackWhenUnsuccessful();
     }
 
     public static HttpURLConnection setURLConnectionGetParams(HttpURLConnection myURLConnection,
@@ -89,19 +92,18 @@ public class ServerConnection {
         return (responseCodeCharacteristicNumber(responseCode) == 2);
     }
 
-    public Response makeGetRequest() {
+    public HttpURLConnection makeGetRequest() {
         String serviceURL = updateRequestURL;
         URL myURL;
-        int responseCode = 0;
         HttpURLConnection myURLConnection = null;
         try {
             myURL = new URL(serviceURL);
             myURLConnection = buildURLConnection(myURL);
             myURLConnection = setURLConnectionGetParams(myURLConnection, headerParams);
             myURLConnection.connect();
-            responseCode = myURLConnection.getResponseCode();
-            return new ResponseActionFactory(context, activity, headerParams, serviceURL,
-                    stUnsuccessful, myURLConnection).doWhenThisResponseCodeIsReturned(responseCode);
+            return myURLConnection;
+//            responseCode = myURLConnection.getResponseCode();
+//            Response response = new Response(responseCode, );
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {

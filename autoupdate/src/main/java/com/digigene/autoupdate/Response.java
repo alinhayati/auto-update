@@ -15,11 +15,13 @@
 package com.digigene.autoupdate;
 
 public class Response {
-    int responseCode;
+    private int responseCode;
     private String responseString;
+    private String responseErrorString;
 
-    public Response(int responseCode, String responseString) {
+    public Response(int responseCode, String responseErrorString, String responseString) {
         this.responseCode = responseCode;
+        this.responseErrorString = responseErrorString;
         this.responseString = responseString;
     }
 
@@ -27,8 +29,11 @@ public class Response {
         return responseCode;
     }
 
+    public String getResponseErrorString() {
+        return responseErrorString;
+    }
+
     public String getResponseString() {
         return responseString;
     }
-
 }
