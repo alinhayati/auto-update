@@ -105,14 +105,6 @@ public class ServerConnection {
             ex.printStackTrace();
         } catch (IOException ex) {
             System.out.println("Error in makeGetRequest:" + ex.getMessage());
-        } finally {
-            if (myURLConnection != null) {
-                try {
-                    myURLConnection.disconnect();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
         throw new RuntimeException("Error getting the download URL from the server");
     }

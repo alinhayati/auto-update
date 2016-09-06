@@ -32,8 +32,9 @@ public class UpdateFileInfo {
         JsonKeys jsonKeys = new JsonKeys(context);
         JSONObject dataJSON = null;
         try {
-            dataJSON = new JSONObject(response.getResponseString()).getJSONObject(jsonKeys
-                    .receivedJsonDataKey);
+//            dataJSON = new JSONObject(response.getResponseString()).getJSONObject(jsonKeys
+//                    .receivedJsonDataKey);
+            dataJSON = new JSONObject(response.getResponseString());
             this.downloadUrl = dataJSON.optString(jsonKeys.downloadUrlKey);
             this.fileName = dataJSON.optString(jsonKeys.fileNameKey);
             this.versionNumber = Integer.parseInt(dataJSON.optString(jsonKeys.versionNumberKey));

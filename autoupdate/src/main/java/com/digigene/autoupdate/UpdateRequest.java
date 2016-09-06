@@ -20,7 +20,9 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,10 +43,10 @@ public class UpdateRequest {
     private ProgressBar progressBar;
     private ServerConnection serverConnection;
 
-    private UpdateRequest(UpdateRequestBuilder updateRequestBuilder) {
-        context = updateRequestBuilder.context;
-        activity = updateRequestBuilder.activity;
-        serverConnectionUpdateURLRequestParams = updateRequestBuilder
+    private UpdateRequest(Builder builder) {
+        context = builder.context;
+        activity = builder.activity;
+        serverConnectionUpdateURLRequestParams = builder
                 .serverConnectionUpdateURLRequestParams;
         serverConnection = new ServerConnection(context, activity,
                 serverConnectionUpdateURLRequestParams);
@@ -80,11 +82,15 @@ public class UpdateRequest {
                 activity.finish();
             }
         };
-        new AlertDialog.Builder(context).setMessage(updateMessage)
+        AlertDialog alertDialog = new AlertDialog.Builder(context).setMessage(updateMessage)
                 .setPositiveButton(context.getString(R.string.aup_positive_text_in_alert_dialog),
                         positiveOnClickListener).setNegativeButton(context.getString(R.string
-                        .aup_negative_text_in_alert_dialog),
-                negativeOnClickListener).setCancelable(false).show();
+                                .aup_negative_text_in_alert_dialog),
+                        negativeOnClickListener).setCancelable(false).create();
+        alertDialog.show();
+        int accentColor = getAppAccentColor(context);
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(accentColor);
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(accentColor);
     }
 
     private void showDownloadingDialogInApp() {
@@ -94,7 +100,8 @@ public class UpdateRequest {
         ImageView imageView = (ImageView) downloadView.findViewById(R.id.aup_status_icon);
         imageView.setImageResource(R.drawable.ic_file_download_black_24dp);
         TextView textView = (TextView) downloadView.findViewById(R.id.aup_status_text);
-        textView.setText(context.getString(R.string.aup_status_text) + context.getString(R.string
+        textView.setText(context.getString(R.string.aup_status_text) + " " + context.getString(R
+                .string
                 .app_name));
         new AlertDialog.Builder(context).setCustomTitle(downloadView).setCancelable(false).show();
     }
@@ -115,13 +122,19 @@ public class UpdateRequest {
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
-    public static class UpdateRequestBuilder {
+    private int getAppAccentColor(Context context) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+        return typedValue.data;
+    }
+
+    public static class Builder {
         private Context context;
         private Activity activity;
         private ServerConnection.UpdateURLRequestParams serverConnectionUpdateURLRequestParams;
         private int downloadProgressInt, bufferSize;
 
-        public UpdateRequestBuilder(Context context, Activity activity, ServerConnection
+        public Builder(Context context, Activity activity, ServerConnection
                 .UpdateURLRequestParams
 
                 serverConnectionUpdateURLRequestParams) {
@@ -135,7 +148,7 @@ public class UpdateRequest {
          *                            end of which the download progress bar
          *                            shows progress
          */
-        public UpdateRequestBuilder withDownloadProgressInterval(int downloadProgressInt) {
+        public Builder withDownloadProgressInterval(int downloadProgressInt) {
             this.downloadProgressInt = downloadProgressInt;
             return this;
         }
@@ -144,7 +157,7 @@ public class UpdateRequest {
          * @param bufferSize This is the buffer size (in bytes) used when downloading the file
          *                   from server
          */
-        public UpdateRequestBuilder withBufferSize(int bufferSize) {
+        public Builder withBufferSize(int bufferSize) {
             this.bufferSize = bufferSize;
             return this;
         }
@@ -155,22 +168,37 @@ public class UpdateRequest {
     }
 
     private class GetUpdateInfoFromServer extends AsyncTask<Void, Void, Void> {
+        Response response;
         private HttpURLConnection httpURLConnection;
+        private int versionCode;
 
         @Override
         protected Void doInBackground(Void... aVoid) {
             httpURLConnection = serverConnection.makeGetRequest();
+            response = new ResponseActionFactory(serverConnectionUpdateURLRequestParams
+                    .getResponseCallBackWhenUnsuccessful())
+                    .doWhenThisResponseCodeIsReturned(httpURLConnection, context, activity);
+            if (httpURLConnection != null) {
+                try {
+                    httpURLConnection.disconnect();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Response response = new ResponseActionFactory(serverConnectionUpdateURLRequestParams
-                    .getResponseCallBackWhenUnsuccessful())
-                    .doWhenThisResponseCodeIsReturned(httpURLConnection, context, activity);
             if (ServerConnection.isResponseSuccessful(response.getResponseCode())) {
                 UpdateFileInfo updateFileInfo = new UpdateFileInfo(context, response);
-                if (updateFileInfo.getVersionNumber() > BuildConfig.VERSION_CODE) {
+                try {
+                    versionCode = context.getPackageManager().getPackageInfo(context.getPackageName
+                            (), 0).versionCode;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if (updateFileInfo.getVersionNumber() > versionCode) {
                     if (updateFileInfo.isForcedUpdate()) {
                         doWhenUpdateIsForced(updateFileInfo);
                     } else {

@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
     }
 
     public void update(View view) {
-        new UpdateRequest.UpdateRequestBuilder(this, this, updateURLRequestParams).build().update();
+        new UpdateRequest.Builder(this, this, updateURLRequestParams).build().update();
     }
 
     @NonNull

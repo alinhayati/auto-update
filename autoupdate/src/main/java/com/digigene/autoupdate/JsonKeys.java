@@ -20,7 +20,6 @@ public class JsonKeys {
     public String receivedJsonDataKey, downloadUrlKey, fileNameKey, descriptionKey, versionNumberKey, forcedUpdateKey;
 
     public JsonKeys(Context context) {
-        receivedJsonDataKey = context.getString(R.string.aup_received_json_data_key);
         downloadUrlKey = context.getString(R.string.aup_download_url_key);
         fileNameKey = context.getString(R.string.aup_file_name_key);
         descriptionKey = context.getString(R.string.aup_description_key);
