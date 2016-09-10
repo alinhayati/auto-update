@@ -34,6 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/aup_status_text"
             android:layout_marginTop="8dp"
+            android:minHeight="8dp"
+            android:maxHeight="8dp"
             android:indeterminate="false"
             android:indeterminateOnly="false"
             android:progressDrawable="@drawable/custom_progress_bar"

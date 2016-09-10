@@ -14,33 +14,26 @@
 
 package com.digigene.autoupdate;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateFileInfo {
-    private int downloadProgressInterval = 500;  // in kilobytes
-    private int bufferSize = 1024; // in bytes
-    private String description;
+    private int downloadProgressInterval;
+    private int bufferSize;
+//    private String updateMessage;
     private String downloadUrl;
     private String fileName;
-    private int versionNumber;
+    private int versionCode;
     private boolean isForcedUpdate;
 
-    public UpdateFileInfo(Context context, Response response) {
-        JsonKeys jsonKeys = new JsonKeys(context);
+    public UpdateFileInfo(Response response, JsonKeys jsonKeys, DialogTextAttrs
+            dialogTextAttrs, int downloadProgressInterval, int bufferSize) {
         JSONObject dataJSON = null;
         try {
-//            dataJSON = new JSONObject(response.getResponseString()).getJSONObject(jsonKeys
-//                    .receivedJsonDataKey);
             dataJSON = new JSONObject(response.getResponseString());
-            this.downloadUrl = dataJSON.optString(jsonKeys.downloadUrlKey);
-            this.fileName = dataJSON.optString(jsonKeys.fileNameKey);
-            this.versionNumber = Integer.parseInt(dataJSON.optString(jsonKeys.versionNumberKey));
-            this.description = dataJSON.optString(jsonKeys.descriptionKey);
-            this.isForcedUpdate = Boolean.parseBoolean(dataJSON.optString(jsonKeys
-                    .forcedUpdateKey));
+            extractDataFromJson(dataJSON, jsonKeys);
+            this.downloadProgressInterval = downloadProgressInterval;
+            this.bufferSize = bufferSize;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -50,25 +43,13 @@ public class UpdateFileInfo {
         return downloadProgressInterval;
     }
 
-    public void setDownloadProgressInterval(int downloadProgressInterval) {
-        if (isDownloadProgressIntervalOk(downloadProgressInterval)) {
-            this.downloadProgressInterval = downloadProgressInterval;
-        }
-    }
-
     public int getBufferSize() {
         return bufferSize;
     }
 
-    public void setBufferSize(int bufferSize) {
-        if (isBufferSizeOk(bufferSize)) {
-            this.bufferSize = bufferSize;
-        }
-    }
-
-    public String getDescription() {
-        return description;
-    }
+//    public String getUpdateMessage() {
+//        return updateMessage;
+//    }
 
     public String getDownloadUrl() {
         return downloadUrl;
@@ -78,12 +59,23 @@ public class UpdateFileInfo {
         return fileName;
     }
 
-    public int getVersionNumber() {
-        return versionNumber;
+    public int getVersionCode() {
+        return versionCode;
     }
 
     public boolean isForcedUpdate() {
         return isForcedUpdate;
+    }
+
+    private void extractDataFromJson(JSONObject dataJSON, JsonKeys jsonKeys) {
+        this.downloadUrl = dataJSON.optString(jsonKeys.getDownloadUrlKey());
+        this.fileName = dataJSON.optString(jsonKeys.getFileNameKey());
+        this.versionCode = Integer.parseInt(dataJSON.optString(jsonKeys.getVersionCodeKey()));
+//        if (jsonKeys.getUpdateMessageKey() != null) {
+//            this.updateMessage = dataJSON.optString(jsonKeys.getUpdateMessageKey());
+//        }
+        this.isForcedUpdate = Boolean.parseBoolean(dataJSON.optString(jsonKeys
+                .getIsForcedKey()));
     }
 
     private boolean isDownloadProgressIntervalOk(int downloadProgressInterval) {

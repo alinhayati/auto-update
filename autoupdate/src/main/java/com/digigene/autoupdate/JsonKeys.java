@@ -14,16 +14,46 @@
 
 package com.digigene.autoupdate;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 
 public class JsonKeys {
-    public String receivedJsonDataKey, downloadUrlKey, fileNameKey, descriptionKey, versionNumberKey, forcedUpdateKey;
+    private final String isForcedKey;
+    private String downloadUrlKey;
+    private String fileNameKey;
+    private String versionCodeKey;
+    private String updateMessageKey;
 
-    public JsonKeys(Context context) {
-        downloadUrlKey = context.getString(R.string.aup_download_url_key);
-        fileNameKey = context.getString(R.string.aup_file_name_key);
-        descriptionKey = context.getString(R.string.aup_description_key);
-        versionNumberKey = context.getString(R.string.aup_version_number_key);
-        forcedUpdateKey = context.getString(R.string.aup_is_Forced_key);
+    public JsonKeys(@NonNull String downloadUrlKey, @NonNull String fileNameKey, @NonNull String
+            versionCodeKey, @NonNull String isForcedKey) {
+        String[] arguments = {downloadUrlKey, fileNameKey, versionCodeKey, isForcedKey};
+        Utils.checkArguments(arguments);
+        this.downloadUrlKey = downloadUrlKey;
+        this.fileNameKey = fileNameKey;
+        this.versionCodeKey = versionCodeKey;
+        this.isForcedKey = isForcedKey;
+    }
+
+    public String getDownloadUrlKey() {
+        return downloadUrlKey;
+    }
+
+    public String getFileNameKey() {
+        return fileNameKey;
+    }
+
+    public String getIsForcedKey() {
+        return isForcedKey;
+    }
+
+    public String getUpdateMessageKey() {
+        return updateMessageKey;
+    }
+
+    public void setUpdateMessageKey(String updateMessageKey) {
+        this.updateMessageKey = updateMessageKey;
+    }
+
+    public String getVersionCodeKey() {
+        return versionCodeKey;
     }
 }

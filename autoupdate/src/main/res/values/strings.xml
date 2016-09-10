@@ -1,20 +1,3 @@
 <resources>
     <string name="app_name">App Name</string>
-
-    /* JSON keys sent from the server */
-    <!--<string name="aup_received_json_data_key">Data JSON key</string>-->
-    <string name="aup_download_url_key">download URL JSON key</string>
-    <string name="aup_file_name_key">update file name JSON key</string>
-    <string name="aup_version_number_key">version number JSON key</string>
-    <string name="aup_description_key">description JSON key</string>
-    <string name="aup_is_Forced_key">is forced update JSON key</string>
-
-    /* Download dialog descriptions
-    <string name="aup_forced_update_message">To continue using this product, you must update it. Would you like to do so?</string>
-    <string name="aup_positive_text_in_alert_dialog">Yes</string>
-    <string name="aup_negative_text_in_alert_dialog">No</string>
-    <string name="aup_downloading_text">Downloading ...</string>
-    <string name="aup_status_text">Downloading the new version of</string>
-
-
 </resources>

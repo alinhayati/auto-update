@@ -16,6 +16,7 @@ package com.digigene.autoupdate;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -42,22 +43,19 @@ public class ServerConnection {
     };
     private final Context context;
     private final Activity activity;
-    private final UpdateURLRequestParams updateURLRequestParams;
+    private final UpdateRequestParams updateRequestParams;
     private String updateRequestURL;
     private Map<String, String> headerParams;
     private ResponseCallBack.Unsuccessful responseUnsuccessful;
 
-    public ServerConnection(Context context, Activity activity, UpdateURLRequestParams
-            updateURLRequestParams) {
+    public ServerConnection(Context context, Activity activity, @NonNull UpdateRequestParams
+            updateRequestParams) {
         this.context = context;
         this.activity = activity;
-        this.updateURLRequestParams = updateURLRequestParams;
-        headerParams = updateURLRequestParams.getHeaderParams();
-        updateRequestURL = updateURLRequestParams.getURL();
-        if ((updateRequestURL == null) || (updateRequestURL.trim() == "")) {
-            throw new RuntimeException("Update URL address is invalid");
-        }
-        responseUnsuccessful = updateURLRequestParams.getResponseCallBackWhenUnsuccessful();
+        this.updateRequestParams = updateRequestParams;
+        headerParams = updateRequestParams.getHeaderParams();
+        updateRequestURL = updateRequestParams.getUrl();
+        responseUnsuccessful = updateRequestParams.getResponseCallbackWhenUnsuccessful();
     }
 
     public static HttpURLConnection setURLConnectionGetParams(HttpURLConnection myURLConnection,
@@ -146,11 +144,5 @@ public class ServerConnection {
         }
     }
 
-    public interface UpdateURLRequestParams {
-        String getURL();
 
-        Map<String, String> getHeaderParams();
-
-        ResponseCallBack.Unsuccessful getResponseCallBackWhenUnsuccessful();
-    }
 }
