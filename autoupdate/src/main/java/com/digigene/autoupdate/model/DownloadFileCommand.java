@@ -12,11 +12,13 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+
+import com.digigene.autoupdate.presenter.UpdateParams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,18 +28,19 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadFile extends AsyncTask<Void, Integer, Void> {
+public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
 
     private int downloadProgressInterval;
     private int bufferSize;
     private String downloadURL, fileName;
     private DownloadCallback downloadCallback;
 
-    public DownloadFile(UpdateFileInfo updateFileInfo, DownloadCallback downloadCallback) {
+    public DownloadFileCommand(UpdateFileInfo updateFileInfo, UpdateParams updateParams,
+                               DownloadCallback downloadCallback) {
         this.downloadURL = updateFileInfo.getDownloadUrl();
         this.fileName = updateFileInfo.getFileName();
-        this.bufferSize = updateFileInfo.getBufferSize();
-        this.downloadProgressInterval = updateFileInfo.getDownloadProgressInterval();
+        this.bufferSize = updateParams.getBufferSize();
+        this.downloadProgressInterval = updateParams.getDownloadDialog().getDownloadProgressInt();
         this.downloadCallback = downloadCallback;
     }
 

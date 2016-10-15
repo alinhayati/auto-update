@@ -12,7 +12,7 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.view;
 
 public class DialogTextAttrs {
     private String updateMessage = "To continue using this product, you must update it. Would you" +

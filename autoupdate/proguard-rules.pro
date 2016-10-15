@@ -15,4 +15,4 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.digigene.autoupdate.JsonKeys.** { *; }
+-keep class com.digigene.autoupdate.model.JsonKeys.** { *; }

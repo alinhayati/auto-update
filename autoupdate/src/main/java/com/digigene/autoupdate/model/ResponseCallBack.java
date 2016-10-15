@@ -12,28 +12,22 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
-public class Response {
-    private int responseCode;
-    private String responseString;
-    private String responseErrorString;
+import android.app.Activity;
+import android.content.Context;
 
-    public Response(int responseCode, String responseErrorString, String responseString) {
-        this.responseCode = responseCode;
-        this.responseErrorString = responseErrorString;
-        this.responseString = responseString;
+import com.digigene.autoupdate.model.Response;
+
+import java.net.HttpURLConnection;
+
+public interface ResponseCallBack {
+    interface Successful {
+        Response responseCodeIs2xx(HttpURLConnection httpURLConnection);
     }
 
-    public int getResponseCode() {
-        return responseCode;
-    }
-
-    public String getResponseErrorString() {
-        return responseErrorString;
-    }
-
-    public String getResponseString() {
-        return responseString;
+    interface Unsuccessful {
+        Response responseCodeIsNot2xx(Context context, Activity activity, HttpURLConnection
+                httpURLConnection);
     }
 }

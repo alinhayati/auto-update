@@ -12,7 +12,7 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 public class Utils {
     public static void checkArguments(String[] fields) {

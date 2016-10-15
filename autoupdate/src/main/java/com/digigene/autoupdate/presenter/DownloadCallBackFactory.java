@@ -12,7 +12,7 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.presenter;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -23,6 +23,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.ProgressBar;
 
+import com.digigene.autoupdate.model.DownloadFileCommand;
+import com.digigene.autoupdate.R;
+import com.digigene.autoupdate.model.UpdateFileInfo;
+
 import java.io.File;
 
 public class DownloadCallBackFactory {
@@ -31,7 +35,7 @@ public class DownloadCallBackFactory {
     private final ProgressBar progressBar;
     private final UpdateFileInfo updateFileInfo;
     private Notification notification;
-    private DownloadFile.DownloadCallback forcedDownloadCallBack = new DownloadFile.DownloadCallback() {
+    private DownloadFileCommand.DownloadCallback forcedDownloadCallBack = new DownloadFileCommand.DownloadCallback() {
 
         @Override
         public void onDownloading(int progressPercent) {
@@ -43,7 +47,7 @@ public class DownloadCallBackFactory {
             doWhenDownloadIsFinishedInForcedMode();
         }
     };
-    private DownloadFile.DownloadCallback notForcedDownloadCallBack = new DownloadFile.DownloadCallback() {
+    private DownloadFileCommand.DownloadCallback notForcedDownloadCallBack = new DownloadFileCommand.DownloadCallback() {
         @Override
         public void onDownloading(int progressPercent) {
             doWhenDownloadingInNonForcedMode(progressPercent);
@@ -63,7 +67,7 @@ public class DownloadCallBackFactory {
         this.updateFileInfo = updateFileInfo;
     }
 
-    public DownloadFile.DownloadCallback getDownloadCallback(CallBackType callBackType) {
+    public DownloadFileCommand.DownloadCallback getDownloadCallback(CallBackType callBackType) {
         if (callBackType == CallBackType.forced) {
             return forcedDownloadCallBack;
         }
@@ -100,7 +104,7 @@ public class DownloadCallBackFactory {
         activity.finish();
     }
 
-    enum CallBackType {
+    public enum CallBackType {
         forced, notForced
     }
 }
