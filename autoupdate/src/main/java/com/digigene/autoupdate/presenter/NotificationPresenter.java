@@ -12,16 +12,13 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+package com.digigene.autoupdate.presenter;
 
-import android.content.Context;
+import com.digigene.autoupdate.EventBus.DownloadEvent;
+import com.digigene.autoupdate.model.UpdateModel;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
+public interface NotificationPresenter extends DownloadEvent {
 
-public interface NotificationView {
-    void loadView(Context context);
+    UpdateModel.DialogTextAttrs getDialogTextAttrs();
 
-    void setPresenter(NotificationPresenter presenter);
-
-    void setProgressBarValue(int progressBarValue);
 }

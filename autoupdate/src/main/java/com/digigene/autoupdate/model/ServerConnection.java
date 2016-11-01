@@ -18,8 +18,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.digigene.autoupdate.presenter.UpdateParams;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

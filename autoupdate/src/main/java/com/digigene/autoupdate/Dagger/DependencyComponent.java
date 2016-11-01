@@ -12,16 +12,14 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+package com.digigene.autoupdate.Dagger;
 
-import android.content.Context;
+import com.digigene.autoupdate.presenter.UpdateRequest;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
+import dagger.Component;
 
-public interface NotificationView {
-    void loadView(Context context);
-
-    void setPresenter(NotificationPresenter presenter);
-
-    void setProgressBarValue(int progressBarValue);
+@AutoUpdateScope
+@Component(modules = {DependencyModule.class})
+public interface DependencyComponent {
+    void inject(UpdateRequest updateRequest);
 }

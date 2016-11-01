@@ -16,12 +16,6 @@ package com.digigene.autoupdate.view;
 
 import android.content.Context;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
-
-public interface NotificationView {
+public interface AlertDialogView {
     void loadView(Context context);
-
-    void setPresenter(NotificationPresenter presenter);
-
-    void setProgressBarValue(int progressBarValue);
 }

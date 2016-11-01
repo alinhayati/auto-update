@@ -12,16 +12,16 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+package com.digigene.autoupdate.model;
 
-import android.content.Context;
+public interface UserDialogTextAttrs {
+    String provideDownloadingText();
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
+    String provideNegativeText();
 
-public interface NotificationView {
-    void loadView(Context context);
+    String providePositiveText();
 
-    void setPresenter(NotificationPresenter presenter);
+    String provideStatusText();
 
-    void setProgressBarValue(int progressBarValue);
+    String provideForcedUpdateMessageByClient();
 }

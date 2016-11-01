@@ -12,16 +12,19 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+package com.digigene.autoupdate.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
+import com.digigene.autoupdate.model.UpdateModel;
 
-public interface NotificationView {
-    void loadView(Context context);
+public interface AlertDialogPresenter {
+    void onPositiveButtonClicked(Context context);
 
-    void setPresenter(NotificationPresenter presenter);
+    void onNegativeButtonClicked(Activity activity);
 
-    void setProgressBarValue(int progressBarValue);
+    int getAppAccentColor(Context context);
+
+    UpdateModel.DialogTextAttrs getDialogTextAttrs();
 }

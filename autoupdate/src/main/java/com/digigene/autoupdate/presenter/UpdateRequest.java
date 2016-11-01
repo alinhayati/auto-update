@@ -18,30 +18,42 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.digigene.autoupdate.Dagger.DaggerWrapper;
 import com.digigene.autoupdate.model.Response;
 import com.digigene.autoupdate.model.ResponseActionFactory;
 import com.digigene.autoupdate.model.ServerConnection;
-import com.digigene.autoupdate.model.UpdateFileInfo;
+import com.digigene.autoupdate.model.UpdateModel;
+import com.digigene.autoupdate.model.UpdateParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
+import javax.inject.Inject;
+
 public class UpdateRequest {
 
-    private Context context;
+    @Inject
+    UpdateAction updateAction;
+    @Inject
+    UpdateModel.UpdateFileInfo updateFileInfo;
+    @Inject
+    ServerConnection serverConnection;
+    @Inject
+    Context context;
+    @Inject
+    UpdateModel.DialogTextAttrs dialogTextAttrs;
     private Activity activity;
     private UpdateParams updateParams;
-    private ServerConnection serverConnection;
 
-    public UpdateRequest(Context context, Activity activity, UpdateParams
-            updateRequestParams) {
-        this.context = context;
+    public UpdateRequest(Activity activity, UpdateParams updateParams) {
         this.activity = activity;
-        this.updateParams = updateRequestParams;
-        serverConnection = new ServerConnection(context, activity,
-                updateRequestParams);
+        this.updateParams = updateParams;
+        DaggerWrapper.getDependencyComponent(activity, updateParams).inject(this);
+        if (updateParams.getUserDialogTextAttrs() != null) {
+            dialogTextAttrs.setUserDialogTextAttrs(updateParams.getUserDialogTextAttrs());
+        }
     }
 
     public void update() {
@@ -49,7 +61,7 @@ public class UpdateRequest {
     }
 
     private class UpdateCommand extends AsyncTask<Void, Void, Void> {
-        Response response;
+        private Response response;
         private HttpURLConnection httpURLConnection;
 
         @Override
@@ -70,10 +82,9 @@ public class UpdateRequest {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (ServerConnection.isResponseSuccessful(response.getResponseCode())) {
-                UpdateFileInfo updateFileInfo = new UpdateFileInfo(response,
-                        updateParams.getJsonKeys());
+                updateFileInfo.extractDataFromJson(response, updateParams.getJsonKeys());
                 updateDialogTextsAttrs();
-                new UpdateAction(context, activity, updateFileInfo, updateParams).update();
+                updateAction.update();
             } else {
                 return;
             }
@@ -88,7 +99,8 @@ public class UpdateRequest {
                     String updateMessageFromServer = dataJSON.optString(updateMessageKey);
                     if (updateMessageFromServer != null || !updateMessageFromServer.trim()
                             .isEmpty()) {
-                        updateParams.getDialogTextAttrs().setUpdateMessage(updateMessageFromServer);
+                        dialogTextAttrs.setForcedUpdateMessageFromServer
+                                (updateMessageFromServer);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

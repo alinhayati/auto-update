@@ -1,4 +1,4 @@
-//        Copyright (C) 2016 DigiGene, (www.DigiGene.com)(alinhayati[at]gmail[dot]com)
+package com.digigene.autoupdate.Dagger;//        Copyright (C) 2016 DigiGene, (www.DigiGene.com)(alinhayati[at]gmail[dot]com)
 //
 //        Licensed under the Apache License, Version 2.0 (the "License");
 //        you may not use this file except in compliance with the License.
@@ -12,16 +12,12 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import android.content.Context;
+import javax.inject.Scope;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
-
-public interface NotificationView {
-    void loadView(Context context);
-
-    void setPresenter(NotificationPresenter presenter);
-
-    void setProgressBarValue(int progressBarValue);
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AutoUpdateScope {
 }

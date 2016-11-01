@@ -12,16 +12,23 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.view;
+package com.digigene.autoupdate.Dagger;
 
-import android.content.Context;
+import android.app.Activity;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
+import com.digigene.autoupdate.model.UpdateParams;
 
-public interface NotificationView {
-    void loadView(Context context);
+public class DaggerWrapper {
+    private static DependencyComponent dependencyComponent;
 
-    void setPresenter(NotificationPresenter presenter);
+    private DaggerWrapper() {
+    }
 
-    void setProgressBarValue(int progressBarValue);
+    public static DependencyComponent getDependencyComponent(Activity activity,UpdateParams updateParams) {
+        if (dependencyComponent == null) {
+            dependencyComponent = DaggerDependencyComponent.builder().dependencyModule(new
+                    DependencyModule(activity,updateParams)).build();
+        }
+        return dependencyComponent;
+    }
 }

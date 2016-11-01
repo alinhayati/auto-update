@@ -12,49 +12,41 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.presenter;
+package com.digigene.autoupdate.model;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
-import com.digigene.autoupdate.model.JsonKeys;
-import com.digigene.autoupdate.model.Response;
-import com.digigene.autoupdate.model.ResponseCallBack;
-import com.digigene.autoupdate.model.Utils;
-import com.digigene.autoupdate.view.DialogTextAttrs;
-import com.digigene.autoupdate.view.DownloadDialog;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Map;
 
 public class UpdateParams {
-    private static final int BUFFER_SIZE = 1024;
     private String url;
     private JsonKeys jsonKeys;
     private int bufferSize;
+    private int downloadProgressInterval;
     private ResponseCallBack.Unsuccessful resUnsuccessful;
-    private DownloadDialog downloadDialog;
-    private DialogTextAttrs dialogTextAttrs;
+    private UserDialogTextAttrs userDialogTextAttrs;
     private Map<String, String> headerParams;
 
     private UpdateParams(@NonNull String url, @NonNull JsonKeys jsonKeys,
-                         Map<String, String> headerParams, int bufferSize, ResponseCallBack
-                                 .Unsuccessful resUnsuccessful, DownloadDialog downloadDialog,
-                         DialogTextAttrs dialogTextAttrs) {
+                         Map<String, String> headerParams, int bufferSize, int
+                                 downloadProgressInterval, ResponseCallBack
+                                 .Unsuccessful resUnsuccessful, UserDialogTextAttrs
+                                 userDialogTextAttrs) {
         this.url = url;
         this.jsonKeys = jsonKeys;
         this.headerParams = headerParams;
         this.bufferSize = bufferSize;
+        this.downloadProgressInterval = downloadProgressInterval;
         this.resUnsuccessful = resUnsuccessful;
-        this.downloadDialog = downloadDialog;
-        this.dialogTextAttrs = dialogTextAttrs;
+        this.userDialogTextAttrs = userDialogTextAttrs;
     }
 
-    public DialogTextAttrs getDialogTextAttrs() {
-        return dialogTextAttrs;
+    public UserDialogTextAttrs getUserDialogTextAttrs() {
+        return userDialogTextAttrs;
+    }
+
+    public int getDownloadProgressInterval() {
+        return downloadProgressInterval;
     }
 
     public int getBufferSize() {
@@ -73,10 +65,6 @@ public class UpdateParams {
         return resUnsuccessful;
     }
 
-    public DownloadDialog getDownloadDialog() {
-        return downloadDialog;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -85,17 +73,10 @@ public class UpdateParams {
         private String url;
         private JsonKeys jsonKeys;
         private Map<String, String> headerParams;
-        private int bufferSize = BUFFER_SIZE;
-        private DialogTextAttrs dialogTextAttrs = new DialogTextAttrs();
-        private ResponseCallBack.Unsuccessful resCallbackWhenUnsuccessful = new ResponseCallBack
-                .Unsuccessful() {
-            @Override
-            public Response responseCodeIsNot2xx(Context context, Activity activity,
-                                                 HttpURLConnection httpURLConnection) {
-                return genericDoResponse(context, activity, httpURLConnection);
-            }
-        };
-        private DownloadDialog downloadDialog = new DownloadDialog();
+        private int bufferSize = UpdateModel.BUFFER_SIZE;
+        private int downloadProgressInterval = UpdateModel.DEFAULT_DOWNLOAD_PROGRESS_INTERVAL;
+        private UserDialogTextAttrs userDialogTextAttrs;
+        private ResponseCallBack.Unsuccessful resCallbackWhenUnsuccessful;
 
         public Builder(@NonNull String url, @NonNull JsonKeys jsonKeys) {
             Utils.throwExceptionIfEmpty(url);
@@ -105,12 +86,12 @@ public class UpdateParams {
 
         public UpdateParams build() {
             return new UpdateParams(url, jsonKeys, headerParams, bufferSize,
-                    resCallbackWhenUnsuccessful, downloadDialog, dialogTextAttrs);
+                    downloadProgressInterval, resCallbackWhenUnsuccessful, userDialogTextAttrs);
         }
 
-        public void setDialogTextAttrs(@NonNull DialogTextAttrs dialogTextAttrs) {
-            this.dialogTextAttrs = dialogTextAttrs;
-            downloadDialog.setDialogTextAttrs(dialogTextAttrs);
+        public Builder setCustomDialogTextAttrs(@NonNull UserDialogTextAttrs userDialogTextAttrs) {
+            this.userDialogTextAttrs = userDialogTextAttrs;
+            return this;
         }
 
         public Builder setHeaderParams(@NonNull Map<String, String> headerParams) {
@@ -118,9 +99,15 @@ public class UpdateParams {
             return this;
         }
 
-        public Builder setDownloadDialog(@NonNull DownloadDialog downloadDialog) {
-            this.downloadDialog = downloadDialog;
-            return this;
+        public Builder setDownloadProgressInterval(@NonNull int downloadProgressInterval) {
+            if (downloadProgressInterval > 0) {
+                this.downloadProgressInterval = downloadProgressInterval;
+                return this;
+            } else {
+                throw new IllegalArgumentException("The download progress interval must be an " +
+                        "integer greater " +
+                        "than zero");
+            }
         }
 
         public Builder setBufferSize(@NonNull int bufferSize) {
@@ -136,20 +123,6 @@ public class UpdateParams {
                                                                    resCallbackWhenUnsuccessful) {
             this.resCallbackWhenUnsuccessful = resCallbackWhenUnsuccessful;
             return this;
-        }
-
-        private Response genericDoResponse(Context context, Activity activity, HttpURLConnection
-                httpURLConnection) {
-            int responseCode = 0;
-            try {
-                responseCode = httpURLConnection.getResponseCode();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(context, "Error connecting to the server: Response code is " +
-                    responseCode, Toast
-                    .LENGTH_SHORT).show();
-            return new Response(responseCode, "Error:" + responseCode, null);
         }
     }
 }

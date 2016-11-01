@@ -14,8 +14,8 @@
 
 package com.digigene.autoupdate.view;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,61 +23,44 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.digigene.autoupdate.R;
+import com.digigene.autoupdate.presenter.DownloadDialogPresenter;
 
-public class DownloadDialog {
-    private int downloadProgressInt = 200;
+public class DownloadDialogViewImpl implements DownloadDialogView {
     private View downloadView;
     private ProgressBar progressBar;
     private ImageView downloadImageView;
     private TextView statusTextView;
-    private DialogTextAttrs dialogTextAttrs = new DialogTextAttrs();
+    private DownloadDialogPresenter downloadDialogPresenter;
 
-    public DownloadDialog() {
+    public DownloadDialogViewImpl(DownloadDialogPresenter downloadDialogPresenter) {
+        this.downloadDialogPresenter = downloadDialogPresenter;
+        downloadDialogPresenter.setView(this);
     }
 
-    public View getDownloadView() {
-        return downloadView;
+    @Override
+    public void loadView(Context context) {
+        findElements(context);
+        initialize(context);
+        downloadDialogPresenter.startDownloading();
     }
 
+    @Override
     public ProgressBar getProgressBar() {
         return progressBar;
     }
 
-    public DialogTextAttrs getDialogTextAttrs() {
-        return dialogTextAttrs;
+    @Override
+    public void setProgressBarValue(int progressBarValue) {
+        progressBar.setProgress(progressBarValue);
     }
 
-    public void setDialogTextAttrs(@NonNull DialogTextAttrs dialogTextAttrs) {
-        this.dialogTextAttrs = dialogTextAttrs;
+    private void initialize(Context context) {
+        statusTextView.setText(downloadDialogPresenter.getStatusText());
+        downloadImageView.setImageResource(downloadDialogPresenter.getImageResourceId());
+        new AlertDialog.Builder(context).setCustomTitle(downloadView).setCancelable(false).show();
     }
 
-    public int getDownloadProgressInt() {
-        return downloadProgressInt;
-    }
-
-    /**
-     * @param downloadProgressInt Download progress interval in kilobytes
-     */
-    public void setDownloadProgressInt(int downloadProgressInt) {
-        if (downloadProgressInt > 0) {
-            this.downloadProgressInt = downloadProgressInt;
-        } else
-            throw new IllegalArgumentException("The downloadProgressInt must an integer greater " +
-                    "than zero");
-    }
-
-    public void setViews(Context context) {
-        initializeViews(context);
-        setValues(context);
-    }
-
-    private void setValues(Context context) {
-        statusTextView.setText(dialogTextAttrs.getStatusText() + " " + context.getString(R.string
-                .app_name));
-        downloadImageView.setImageResource(R.drawable.ic_file_download_black_24dp);
-    }
-
-    private void initializeViews(Context context) {
+    private void findElements(Context context) {
         downloadView = LayoutInflater.from(context).inflate(R.layout.aup_downloading_layout,
                 null, false);
         progressBar = (ProgressBar) downloadView.findViewById(R.id.aup_status_progress);

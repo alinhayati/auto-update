@@ -14,29 +14,26 @@
 
 package com.digigene.autoupdate.presenter;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 
-import com.digigene.autoupdate.model.DownloadFileCommand;
-import com.digigene.autoupdate.model.UpdateFileInfo;
-import com.digigene.autoupdate.view.DownloadDialog;
-import com.digigene.autoupdate.view.NotificationView;
+import com.digigene.autoupdate.model.DownloadFileCommandImpl;
+import com.digigene.autoupdate.model.UpdateModel;
+import com.digigene.autoupdate.view.AlertDialogView;
 
 public class UpdateAction {
+    private AlertDialogView alertDialogView;
+    private DownloadFileCommandImpl downloadFileCommand;
     private Context context;
-    private Activity activity;
-    private UpdateFileInfo updateFileInfo;
-    private UpdateParams updateParams;
+    private UpdateModel.UpdateFileInfo updateFileInfo;
 
-    public UpdateAction(Context context, Activity activity, UpdateFileInfo updateFileInfo,
-                        UpdateParams updateParams) {
+    public UpdateAction(Context context, UpdateModel.UpdateFileInfo
+            updateFileInfo, AlertDialogView alertDialogView,
+                        DownloadFileCommandImpl downloadFileCommand) {
         this.context = context;
-        this.activity = activity;
         this.updateFileInfo = updateFileInfo;
-        this.updateParams = updateParams;
+        this.alertDialogView = alertDialogView;
+        this.downloadFileCommand = downloadFileCommand;
     }
 
     public void update() {
@@ -46,8 +43,12 @@ public class UpdateAction {
                     (), 0).versionCode;
             if (updateFileInfo.getVersionCode() > versionCode) {
                 if (updateFileInfo.isForcedUpdate()) {
+                    downloadFileCommand.setDownloadType(DownloadFileCommandImpl.DownloadType
+                            .forced);
                     doForcedUpdate();
                 } else {
+                    downloadFileCommand.setDownloadType(DownloadFileCommandImpl.DownloadType
+                            .notForced);
                     doNonForcedUpdate();
                 }
             }
@@ -56,59 +57,15 @@ public class UpdateAction {
         }
     }
 
-    private DialogInterface.OnClickListener getNegativeOnClickListener() {
-        return new DialogInterface
-                .OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                activity.finish();
-            }
-        };
-    }
-
-    private DialogInterface.OnClickListener getPositiveOnClickListener() {
-        return new DialogInterface
-                .OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                DownloadDialog downloadDialog = updateParams.getDownloadDialog();
-                showDownloadingDialogInApp(downloadDialog);
-                new DownloadFileCommand(updateFileInfo, updateParams, new DownloadCallBackFactory
-                        (context, activity, updateParams.getDownloadDialog().getProgressBar(), null,
-                                updateFileInfo).getDownloadCallback(DownloadCallBackFactory
-                        .CallBackType.forced)).execute();
-            }
-        };
-    }
-
     private void doNonForcedUpdate() {
-        DownloadDialog downloadDialog = updateParams.getDownloadDialog();
-        NotificationView notificationView = new NotificationView(context, updateParams
-                .getDialogTextAttrs());
-        notificationView.showDownloadingInNotification();
-        startDownloading(downloadDialog, notificationView);
+        startDownloading();
     }
 
     private void doForcedUpdate() {
-        DialogInterface.OnClickListener positiveOnClickListener = getPositiveOnClickListener
-                ();
-        DialogInterface.OnClickListener negativeOnClickListener = getNegativeOnClickListener();
-        new com.digigene.autoupdate.view.AlertDialog(context, updateParams.getDialogTextAttrs())
-                .showAlertDialog(positiveOnClickListener, negativeOnClickListener);
+        alertDialogView.loadView(context);
     }
 
-    private void showDownloadingDialogInApp(DownloadDialog downloadDialog) {
-        downloadDialog.setViews(context);
-        new AlertDialog.Builder(context).setCustomTitle(downloadDialog.getDownloadView())
-                .setCancelable(false).show();
-    }
-
-    private void startDownloading(DownloadDialog downloadDialog, NotificationView
-            notificationView) {
-        new DownloadFileCommand(updateFileInfo, updateParams, new DownloadCallBackFactory
-                (context, activity,
-                        downloadDialog.getProgressBar(), notificationView.getNotification(),
-                        updateFileInfo).getDownloadCallback
-                (DownloadCallBackFactory.CallBackType.notForced)).execute();
+    private void startDownloading() {
+        downloadFileCommand.execute();
     }
 }

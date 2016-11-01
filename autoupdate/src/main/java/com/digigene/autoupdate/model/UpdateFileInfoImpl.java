@@ -17,39 +17,43 @@ package com.digigene.autoupdate.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UpdateFileInfo {
+public class UpdateFileInfoImpl implements UpdateModel.UpdateFileInfo {
     private String downloadUrl;
     private String fileName;
     private int versionCode;
     private boolean isForcedUpdate;
 
-    public UpdateFileInfo(Response response, JsonKeys jsonKeys) {
-        JSONObject dataJSON = null;
-        try {
-            dataJSON = new JSONObject(response.getResponseString());
-            extractDataFromJson(dataJSON, jsonKeys);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public UpdateFileInfoImpl() {
+
     }
 
+    @Override
     public String getDownloadUrl() {
         return downloadUrl;
     }
 
+    @Override
     public String getFileName() {
         return fileName;
     }
 
+    @Override
     public int getVersionCode() {
         return versionCode;
     }
 
+    @Override
     public boolean isForcedUpdate() {
         return isForcedUpdate;
     }
 
-    private void extractDataFromJson(JSONObject dataJSON, JsonKeys jsonKeys) {
+    public void extractDataFromJson(Response response, JsonKeys jsonKeys) {
+        JSONObject dataJSON = null;
+        try {
+            dataJSON = new JSONObject(response.getResponseString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         this.downloadUrl = dataJSON.optString(jsonKeys.getDownloadUrlKey());
         this.fileName = dataJSON.optString(jsonKeys.getFileNameKey());
         this.versionCode = Integer.parseInt(dataJSON.optString(jsonKeys.getVersionCodeKey()));

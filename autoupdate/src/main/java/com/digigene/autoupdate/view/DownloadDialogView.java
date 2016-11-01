@@ -15,13 +15,12 @@
 package com.digigene.autoupdate.view;
 
 import android.content.Context;
+import android.widget.ProgressBar;
 
-import com.digigene.autoupdate.presenter.NotificationPresenter;
-
-public interface NotificationView {
+public interface DownloadDialogView {
     void loadView(Context context);
 
-    void setPresenter(NotificationPresenter presenter);
+    ProgressBar getProgressBar();
 
     void setProgressBarValue(int progressBarValue);
 }
