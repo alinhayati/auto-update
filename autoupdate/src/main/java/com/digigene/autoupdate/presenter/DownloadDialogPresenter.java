@@ -12,18 +12,19 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.presenter;
 
-public class Utils {
-    public static void checkArguments(String[] fields) {
-        for (String field : fields) {
-            Utils.throwExceptionIfEmpty(field);
-        }
-    }
+import com.digigene.autoupdate.EventBus.DownloadEvent;
+import com.digigene.autoupdate.view.DownloadDialogView;
 
-    public static void throwExceptionIfEmpty(String field) {
-        if (field.trim().isEmpty()) {
-            throw new IllegalArgumentException(field + " in JsonKeys must not be null");
-        }
-    }
+public interface DownloadDialogPresenter extends DownloadEvent {
+
+    void startDownloading();
+
+    String getStatusText();
+
+    int getImageResourceId();
+
+    void setView(DownloadDialogView downloadDialogView);
+
 }

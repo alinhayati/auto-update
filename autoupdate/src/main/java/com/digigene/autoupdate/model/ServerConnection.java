@@ -12,7 +12,7 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 import android.app.Activity;
 import android.content.Context;
@@ -43,19 +43,19 @@ public class ServerConnection {
     };
     private final Context context;
     private final Activity activity;
-    private final UpdateRequestParams updateRequestParams;
+    private final UpdateParams updateParams;
     private String updateRequestURL;
     private Map<String, String> headerParams;
     private ResponseCallBack.Unsuccessful responseUnsuccessful;
 
-    public ServerConnection(Context context, Activity activity, @NonNull UpdateRequestParams
+    public ServerConnection(Context context, Activity activity, @NonNull UpdateParams
             updateRequestParams) {
         this.context = context;
         this.activity = activity;
-        this.updateRequestParams = updateRequestParams;
+        this.updateParams = updateRequestParams;
         headerParams = updateRequestParams.getHeaderParams();
         updateRequestURL = updateRequestParams.getUrl();
-        responseUnsuccessful = updateRequestParams.getResponseCallbackWhenUnsuccessful();
+        responseUnsuccessful = updateRequestParams.getResUnsuccessful();
     }
 
     public static HttpURLConnection setURLConnectionGetParams(HttpURLConnection myURLConnection,

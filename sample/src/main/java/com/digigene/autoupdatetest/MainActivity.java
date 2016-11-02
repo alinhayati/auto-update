@@ -1,23 +1,15 @@
 package com.digigene.autoupdatetest;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.Toast;
 
-import com.digigene.autoupdate.JsonKeys;
-import com.digigene.autoupdate.Response;
-import com.digigene.autoupdate.ResponseCallBack;
+import com.digigene.autoupdate.model.JsonKeys;
+import com.digigene.autoupdate.model.UpdateParams;
 import com.digigene.autoupdate.UpdateRequest;
-import com.digigene.autoupdate.UpdateRequestParams;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import com.digigene.autoupdate.model.UserDialogTextAttrs;
 
 public class MainActivity extends Activity {
-    UpdateRequestParams updateRequestParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,56 +18,42 @@ public class MainActivity extends Activity {
     }
 
     public void update(View view) {
-        String url = "http://www.yourWhateverDomain.com/updateApp?currentVersion=" + BuildConfig
-                .VERSION_CODE;
-        JsonKeys jsonKeys = new JsonKeys("downloadJsonKey", "fileNameJsonKey",
-                "versionCodeJsonKey", "isForcedJsonKey");
-        jsonKeys.setUpdateMessageKey("updateMessageJsonKey");
-        UpdateRequestParams updateRequestParams = new UpdateRequestParams(url, jsonKeys, null,
-                getResponseCallbackWhenUnsuccessful());
-        new UpdateRequest.Builder(this, this, updateRequestParams).build().update();
-    }
-
-    private ResponseCallBack.Unsuccessful getResponseCallbackWhenUnsuccessful() {
-        return new ResponseCallBack.Unsuccessful() {
+        String url = "http://192.168.13.20:8080/api/" + "app/ravitel/" + "100" +
+                "/newer";
+        JsonKeys jsonKeys = new JsonKeys("downloadUrl", "fileName",
+                "versionNumber", "isForced");
+        UserDialogTextAttrs userDialogTextAttrs = new UserDialogTextAttrs() {
             @Override
-            public Response doWhenResponseCodeIs1xx(Context context, Activity activity,
-                                                    HttpURLConnection httpURLConnection) {
-                return genericDoResponse(context, activity, httpURLConnection);
+            public String provideDownloadingText() {
+                return "در حال دانلود فایل";
             }
 
             @Override
-            public Response doWhenResponseCodeIs3xx(Context context, Activity activity,
-                                                    HttpURLConnection httpURLConnection) {
-                return genericDoResponse(context, activity, httpURLConnection);
+            public String provideNegativeText() {
+                return "خیر";
             }
 
             @Override
-            public Response doWhenResponseCodeIs4xx(Context context, Activity activity,
-                                                    HttpURLConnection httpURLConnection) {
-                return genericDoResponse(context, activity, httpURLConnection);
+            public String providePositiveText() {
+                return "بله";
             }
 
             @Override
-            public Response doWhenResponseCodeIs5xx(Context context, Activity activity,
-                                                    HttpURLConnection httpURLConnection) {
-                return genericDoResponse(context, activity, httpURLConnection);
+            public String provideStatusText() {
+                return "دانلود فایل جدید";
+            }
+
+            @Override
+            public String provideForcedUpdateMessageByClient() {
+                return "یرای ادامه استفاده باید بروزرسانی کنید. آیا مایل هستید؟";
             }
         };
-    }
-
-    @NonNull
-    private Response genericDoResponse(Context context, Activity activity, HttpURLConnection
-            httpURLConnection) {
-        int responseCode = 0;
-        try {
-            responseCode = httpURLConnection.getResponseCode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(context, "Error connecting to the server: Response code is " +
-                responseCode, Toast
-                .LENGTH_SHORT).show();
-        return new Response(responseCode, "Error:" + responseCode, null);
+        UpdateParams updateParams = new UpdateParams.Builder(url, jsonKeys).setBufferSize(1024)
+                .setDownloadProgressInterval(500).setCustomDialogTextAttrs(userDialogTextAttrs)
+                .build();
+//        UpdateParams updateParams = new UpdateParams.Builder(url, jsonKeys).setBufferSize(1024)
+//                .setDownloadProgressInterval(500)
+//                .build();
+        new UpdateRequest(this, updateParams).update();
     }
 }

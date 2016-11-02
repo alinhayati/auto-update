@@ -12,7 +12,7 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 import android.app.Activity;
 import android.content.Context;
@@ -31,7 +31,7 @@ public class ResponseActionFactory implements ResponseCallBack.Successful {
     }
 
     @Override
-    public Response doWhenResponseCodeIs2xx(HttpURLConnection httpURLConnection) {
+    public Response responseCodeIs2xx(HttpURLConnection httpURLConnection) {
         BufferedReader br = null;
         try {
             int responseCode = httpURLConnection.getResponseCode();
@@ -49,35 +49,28 @@ public class ResponseActionFactory implements ResponseCallBack.Successful {
         return null;
     }
 
-    public Response doWhenThisResponseCodeIsReturned(HttpURLConnection
-                                                             httpURLConnection, Context context,
-                                                     Activity activity) {
+    public Response makeResponse(HttpURLConnection httpURLConnection, Context context, Activity
+            activity) {
         int responseCode = 0;
         try {
             responseCode = httpURLConnection.getResponseCode();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(context, "IOException", Toast.LENGTH_SHORT).show();
-            return new Response(0, "Error in doWhenThisResponseCodeIsReturned:" + e.getMessage(),
+            return new Response(0, "Error in makeResponse:" + e.getMessage(),
                     null);
         }
         int responseCodeCharacteristicNumber = Math.abs(responseCode / 100);
-        switch (responseCodeCharacteristicNumber) {
-            case 2:
-                return doWhenResponseCodeIs2xx(httpURLConnection);
-            case 1:
-                return responseUnsuccessful.doWhenResponseCodeIs1xx(context, activity,
-                        httpURLConnection);
-            case 3:
-                return responseUnsuccessful.doWhenResponseCodeIs3xx(context, activity,
-                        httpURLConnection);
-            case 4:
-                return responseUnsuccessful.doWhenResponseCodeIs4xx(context, activity,
-                        httpURLConnection);
-            case 5:
-                return responseUnsuccessful.doWhenResponseCodeIs5xx(context, activity,
-                        httpURLConnection);
+        return selectResponse(httpURLConnection, context, activity, responseCodeCharacteristicNumber);
+    }
+
+    private Response selectResponse(HttpURLConnection httpURLConnection, Context context, Activity
+            activity, int responseCodeCharacteristicNumber) {
+        if (responseCodeCharacteristicNumber == 2) {
+            return responseCodeIs2xx(httpURLConnection);
+        } else {
+            return responseUnsuccessful.responseCodeIsNot2xx(context, activity,
+                    httpURLConnection);
         }
-        return null;
     }
 }

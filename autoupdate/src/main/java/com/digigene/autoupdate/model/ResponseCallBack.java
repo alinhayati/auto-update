@@ -12,29 +12,22 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 import android.app.Activity;
 import android.content.Context;
+
+import com.digigene.autoupdate.model.Response;
 
 import java.net.HttpURLConnection;
 
 public interface ResponseCallBack {
     interface Successful {
-        Response doWhenResponseCodeIs2xx(HttpURLConnection httpURLConnection);
+        Response responseCodeIs2xx(HttpURLConnection httpURLConnection);
     }
 
     interface Unsuccessful {
-        Response doWhenResponseCodeIs1xx(Context context, Activity activity, HttpURLConnection
-                httpURLConnection);
-
-        Response doWhenResponseCodeIs3xx(Context context, Activity activity, HttpURLConnection
-                httpURLConnection);
-
-        Response doWhenResponseCodeIs4xx(Context context, Activity activity, HttpURLConnection
-                httpURLConnection);
-
-        Response doWhenResponseCodeIs5xx(Context context, Activity activity, HttpURLConnection
+        Response responseCodeIsNot2xx(Context context, Activity activity, HttpURLConnection
                 httpURLConnection);
     }
 }

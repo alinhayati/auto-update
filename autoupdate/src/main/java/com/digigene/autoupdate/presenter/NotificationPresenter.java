@@ -12,28 +12,13 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.presenter;
 
-public class Response {
-    private int responseCode;
-    private String responseString;
-    private String responseErrorString;
+import com.digigene.autoupdate.EventBus.DownloadEvent;
+import com.digigene.autoupdate.model.UpdateModel;
 
-    public Response(int responseCode, String responseErrorString, String responseString) {
-        this.responseCode = responseCode;
-        this.responseErrorString = responseErrorString;
-        this.responseString = responseString;
-    }
+public interface NotificationPresenter extends DownloadEvent {
 
-    public int getResponseCode() {
-        return responseCode;
-    }
+    UpdateModel.DialogTextAttrs getDialogTextAttrs();
 
-    public String getResponseErrorString() {
-        return responseErrorString;
-    }
-
-    public String getResponseString() {
-        return responseString;
-    }
 }

@@ -12,11 +12,15 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate;
+package com.digigene.autoupdate.model;
 
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+
+import com.digigene.autoupdate.EventBus.DownloadEventMessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,24 +30,38 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadFile extends AsyncTask<Void, Integer, Void> {
+public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
 
+    private final UpdateModel.UpdateFileInfo updateFileInfo;
+    private final UpdateParams updateParams;
     private int downloadProgressInterval;
     private int bufferSize;
     private String downloadURL, fileName;
-    private DownloadCallback downloadCallback;
+    private DownloadType downloadType;
 
-    public DownloadFile(UpdateFileInfo updateFileInfo, DownloadCallback downloadCallback) {
-        this.downloadURL = updateFileInfo.getDownloadUrl();
-        this.fileName = updateFileInfo.getFileName();
-        this.bufferSize = updateFileInfo.getBufferSize();
-        this.downloadProgressInterval = updateFileInfo.getDownloadProgressInterval();
-        this.downloadCallback = downloadCallback;
+    public DownloadFileCommand(UpdateModel
+                                           .UpdateFileInfo updateFileInfo, UpdateParams
+                                           updateParams) {
+        this.updateFileInfo = updateFileInfo;
+        this.updateParams = updateParams;
     }
 
-    @Override
     protected Void doInBackground(Void... aVoid) {
+        downloadInBackground();
+        return null;
+    }
+
+    protected void onPostExecute(Void aVoid) {
+        doAfterDownloadIsFinished();
+    }
+
+    protected void onProgressUpdate(Integer... progress) {
+        updateProgressPercent(progress[0]);
+    }
+
+    public void downloadInBackground() {
         try {
+            setParams(updateFileInfo, updateParams);
             URL downloadURL = new URL(this.downloadURL);
             HttpURLConnection httpURLConnection = ServerConnection.buildURLConnection(downloadURL);
             httpURLConnection = ServerConnection.setURLConnectionGetParams(httpURLConnection, null);
@@ -57,17 +75,23 @@ public class DownloadFile extends AsyncTask<Void, Integer, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        downloadCallback.onDownloadFinished();
+    public void updateProgressPercent(int progressPercent) {
+        DownloadEventMessage downloadEventMessage = new DownloadEventMessage();
+        downloadEventMessage.setDownloadingInForced(downloadType == DownloadType.forced);
+        downloadEventMessage.setProgressBarPercent(progressPercent);
+        EventBus.getDefault().post(downloadEventMessage);
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... progress) {
-        downloadCallback.onDownloading(progress[0]);
+    public void doAfterDownloadIsFinished() {
+        DownloadEventMessage downloadEventMessage = new DownloadEventMessage();
+        downloadEventMessage.setFinishedInForced(downloadType == DownloadType.forced);
+        EventBus.getDefault().post(downloadEventMessage);
+    }
+
+    public void setDownloadType(DownloadType downloadType) {
+        this.downloadType = downloadType;
     }
 
     @NonNull
@@ -78,6 +102,13 @@ public class DownloadFile extends AsyncTask<Void, Integer, Void> {
             outputFile.delete();
         }
         return new FileOutputStream(outputFile);
+    }
+
+    private void setParams(UpdateModel.UpdateFileInfo updateFileInfo, UpdateParams updateParams) {
+        this.downloadURL = updateFileInfo.getDownloadUrl();
+        this.fileName = updateFileInfo.getFileName();
+        this.bufferSize = updateParams.getBufferSize();
+        this.downloadProgressInterval = updateParams.getDownloadProgressInterval();
     }
 
     private void doWhenResponseIsSuccessful(HttpURLConnection httpURLConnection) throws
@@ -115,10 +146,7 @@ public class DownloadFile extends AsyncTask<Void, Integer, Void> {
         fos.close();
     }
 
-
-    public interface DownloadCallback {
-        void onDownloading(int progressPercent);
-
-        void onDownloadFinished();
+    public enum DownloadType {
+        forced, notForced
     }
 }
