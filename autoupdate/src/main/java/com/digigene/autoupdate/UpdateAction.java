@@ -12,24 +12,24 @@
 //        See the License for the specific language governing permissions and
 //        limitations under the License.
 
-package com.digigene.autoupdate.presenter;
+package com.digigene.autoupdate;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import com.digigene.autoupdate.model.DownloadFileCommandImpl;
+import com.digigene.autoupdate.model.DownloadFileCommand;
 import com.digigene.autoupdate.model.UpdateModel;
 import com.digigene.autoupdate.view.AlertDialogView;
 
 public class UpdateAction {
     private AlertDialogView alertDialogView;
-    private DownloadFileCommandImpl downloadFileCommand;
+    private DownloadFileCommand downloadFileCommand;
     private Context context;
     private UpdateModel.UpdateFileInfo updateFileInfo;
 
     public UpdateAction(Context context, UpdateModel.UpdateFileInfo
             updateFileInfo, AlertDialogView alertDialogView,
-                        DownloadFileCommandImpl downloadFileCommand) {
+                        DownloadFileCommand downloadFileCommand) {
         this.context = context;
         this.updateFileInfo = updateFileInfo;
         this.alertDialogView = alertDialogView;
@@ -43,11 +43,11 @@ public class UpdateAction {
                     (), 0).versionCode;
             if (updateFileInfo.getVersionCode() > versionCode) {
                 if (updateFileInfo.isForcedUpdate()) {
-                    downloadFileCommand.setDownloadType(DownloadFileCommandImpl.DownloadType
+                    downloadFileCommand.setDownloadType(DownloadFileCommand.DownloadType
                             .forced);
                     doForcedUpdate();
                 } else {
-                    downloadFileCommand.setDownloadType(DownloadFileCommandImpl.DownloadType
+                    downloadFileCommand.setDownloadType(DownloadFileCommand.DownloadType
                             .notForced);
                     doNonForcedUpdate();
                 }

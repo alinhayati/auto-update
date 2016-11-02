@@ -22,7 +22,7 @@ import android.os.Environment;
 
 import com.digigene.autoupdate.EventBus.DownloadEventMessage;
 import com.digigene.autoupdate.R;
-import com.digigene.autoupdate.model.DownloadFileCommandImpl;
+import com.digigene.autoupdate.model.DownloadFileCommand;
 import com.digigene.autoupdate.model.UpdateModel;
 import com.digigene.autoupdate.view.DownloadDialogView;
 
@@ -33,7 +33,7 @@ import java.io.File;
 
 public class DownloadDialogPresenterImpl implements DownloadDialogPresenter {
     private final Context context;
-    private final DownloadFileCommandImpl downloadFileCommand;
+    private final DownloadFileCommand downloadFileCommand;
     private UpdateModel.UpdateFileInfo updateFileInfo;
     private Activity activity;
     private UpdateModel.DialogTextAttrs dialogTextAttrs;
@@ -41,7 +41,7 @@ public class DownloadDialogPresenterImpl implements DownloadDialogPresenter {
 
     public DownloadDialogPresenterImpl(Context context, Activity activity, UpdateModel
             .DialogTextAttrs dialogTextAttrs, UpdateModel.UpdateFileInfo updateFileInfo,
-                                       DownloadFileCommandImpl downloadFileCommand) {
+                                       DownloadFileCommand downloadFileCommand) {
         this.context = context;
         this.activity = activity;
         this.dialogTextAttrs = dialogTextAttrs;

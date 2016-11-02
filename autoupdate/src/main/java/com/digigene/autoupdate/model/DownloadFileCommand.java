@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadFileCommandImpl extends AsyncTask<Void, Integer, Void> {
+public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
 
     private final UpdateModel.UpdateFileInfo updateFileInfo;
     private final UpdateParams updateParams;
@@ -39,7 +39,7 @@ public class DownloadFileCommandImpl extends AsyncTask<Void, Integer, Void> {
     private String downloadURL, fileName;
     private DownloadType downloadType;
 
-    public DownloadFileCommandImpl(UpdateModel
+    public DownloadFileCommand(UpdateModel
                                            .UpdateFileInfo updateFileInfo, UpdateParams
                                            updateParams) {
         this.updateFileInfo = updateFileInfo;

@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.digigene.autoupdate.model.JsonKeys;
 import com.digigene.autoupdate.model.UpdateParams;
-import com.digigene.autoupdate.presenter.UpdateRequest;
+import com.digigene.autoupdate.UpdateRequest;
 import com.digigene.autoupdate.model.UserDialogTextAttrs;
 
 public class MainActivity extends Activity {

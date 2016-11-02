@@ -14,7 +14,7 @@
 
 package com.digigene.autoupdate.Dagger;
 
-import com.digigene.autoupdate.presenter.UpdateRequest;
+import com.digigene.autoupdate.UpdateRequest;
 
 import dagger.Component;
 

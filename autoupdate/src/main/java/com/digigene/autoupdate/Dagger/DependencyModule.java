@@ -19,7 +19,7 @@ import android.content.Context;
 import android.widget.ProgressBar;
 
 import com.digigene.autoupdate.model.DialogTextAttrsImpl;
-import com.digigene.autoupdate.model.DownloadFileCommandImpl;
+import com.digigene.autoupdate.model.DownloadFileCommand;
 import com.digigene.autoupdate.model.ServerConnection;
 import com.digigene.autoupdate.model.UpdateFileInfoImpl;
 import com.digigene.autoupdate.model.UpdateModel;
@@ -30,7 +30,7 @@ import com.digigene.autoupdate.presenter.DownloadDialogPresenter;
 import com.digigene.autoupdate.presenter.DownloadDialogPresenterImpl;
 import com.digigene.autoupdate.presenter.NotificationPresenter;
 import com.digigene.autoupdate.presenter.NotificationPresenterImpl;
-import com.digigene.autoupdate.presenter.UpdateAction;
+import com.digigene.autoupdate.UpdateAction;
 import com.digigene.autoupdate.view.AlertDialogView;
 import com.digigene.autoupdate.view.AlertDialogViewImpl;
 import com.digigene.autoupdate.view.DownloadDialogView;
@@ -103,7 +103,7 @@ public class DependencyModule {
                                                                    .DialogTextAttrs
                                                                    dialogTextAttrs, UpdateModel
                                                                    .UpdateFileInfo updateFileInfo,
-                                                           DownloadFileCommandImpl
+                                                           DownloadFileCommand
                                                                    downloadFileCommand) {
         return new DownloadDialogPresenterImpl(context, activity, dialogTextAttrs, updateFileInfo,
                 downloadFileCommand);
@@ -111,11 +111,11 @@ public class DependencyModule {
 
     @AutoUpdateScope
     @Provides
-    DownloadFileCommandImpl provideDownloadFileCommand(
+    DownloadFileCommand provideDownloadFileCommand(
             UpdateModel.UpdateFileInfo
                     updateFileInfo, UpdateParams
                     updateParams) {
-        return new DownloadFileCommandImpl(updateFileInfo, updateParams);
+        return new DownloadFileCommand(updateFileInfo, updateParams);
     }
 
     @AutoUpdateScope
@@ -135,7 +135,7 @@ public class DependencyModule {
     @Provides
     UpdateAction provideUpdateAction(Context context, UpdateModel
             .UpdateFileInfo updateFileInfo, AlertDialogView
-                                             alertDialogView, DownloadFileCommandImpl
+                                             alertDialogView, DownloadFileCommand
                                              downloadFileCommand) {
         return new UpdateAction(context, updateFileInfo, alertDialogView,
                 downloadFileCommand);
