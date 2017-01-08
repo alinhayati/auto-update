@@ -16,6 +16,8 @@ package com.digigene.autoupdate.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.EGLExt;
+import android.os.Process;
 import android.util.TypedValue;
 
 import com.digigene.autoupdate.R;
@@ -41,7 +43,7 @@ public class AlertDialogPresenterImpl implements AlertDialogPresenter {
 
     @Override
     public void onNegativeButtonClicked(Activity activity) {
-        activity.finish();
+        System.exit(0);
     }
 
     @Override

@@ -16,6 +16,8 @@ package com.digigene.autoupdate;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
 import com.digigene.autoupdate.Dagger.DaggerWrapper;
@@ -57,7 +59,9 @@ public class UpdateRequest {
     }
 
     public void update() {
-        new UpdateCommand().execute();
+        if (isNetworkAvailable()) {
+            new UpdateCommand().execute();
+        }
     }
 
     private class UpdateCommand extends AsyncTask<Void, Void, Void> {
@@ -107,5 +111,13 @@ public class UpdateRequest {
                 }
             }
         }
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
