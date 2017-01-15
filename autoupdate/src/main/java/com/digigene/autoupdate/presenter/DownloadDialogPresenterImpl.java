@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 
 import com.digigene.autoupdate.EventBus.DownloadEventMessage;
 import com.digigene.autoupdate.R;
@@ -78,7 +79,7 @@ public class DownloadDialogPresenterImpl implements DownloadDialogPresenter {
             doWhenDownloadingInForcedMode(downloadEventMessage.getProgressBarPercent());
         }
         if (downloadEventMessage.isFinishedInForced()) {
-            doWhenDownloadIsFinishedInForcedMode();
+            doWhenDownloadIsFinishedInForcedMode(downloadEventMessage.getFileName());
         }
     }
 
@@ -86,13 +87,16 @@ public class DownloadDialogPresenterImpl implements DownloadDialogPresenter {
         downloadDialogView.setProgressBarValue(progressPercent);
     }
 
-    private void doWhenDownloadIsFinishedInForcedMode() {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+    private void doWhenDownloadIsFinishedInForcedMode(String fileName) {
+        File directory = context.getExternalFilesDir(null);
+        File file = new File(directory, fileName);
+        Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName(),
+                file);
+        Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
-        intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() +
-                "/" + updateFileInfo.getFileName())), "application/vnd.android" +
-                ".package-archive");
+        intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(intent);
         activity.finish();
     }

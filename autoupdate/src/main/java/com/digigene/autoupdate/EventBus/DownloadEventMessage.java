@@ -18,6 +18,7 @@ public class DownloadEventMessage {
     private int progressBarPercent;
     private boolean isFinishedInNonForced, isFinishedInForced;
     private boolean isDownloadingInNonForced, isDownloadingInForced;
+    private String fileName;
 
     public boolean isDownloadingInForced() {
         return isDownloadingInForced;
@@ -57,5 +58,13 @@ public class DownloadEventMessage {
 
     public void setProgressBarPercent(int progressBarPercent) {
         this.progressBarPercent = progressBarPercent;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

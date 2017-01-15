@@ -14,6 +14,7 @@
 
 package com.digigene.autoupdate.model;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -32,6 +33,7 @@ import java.net.URL;
 
 public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
 
+    private Context context;
     private final UpdateModel.UpdateFileInfo updateFileInfo;
     private final UpdateParams updateParams;
     private int downloadProgressInterval;
@@ -39,9 +41,10 @@ public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
     private String downloadURL, fileName;
     private DownloadType downloadType;
 
-    public DownloadFileCommand(UpdateModel
-                                           .UpdateFileInfo updateFileInfo, UpdateParams
-                                           updateParams) {
+    public DownloadFileCommand(Context context, UpdateModel
+            .UpdateFileInfo updateFileInfo, UpdateParams
+                                       updateParams) {
+        this.context = context;
         this.updateFileInfo = updateFileInfo;
         this.updateParams = updateParams;
     }
@@ -52,7 +55,7 @@ public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
     }
 
     protected void onPostExecute(Void aVoid) {
-        doAfterDownloadIsFinished();
+        doAfterDownloadIsFinished(updateFileInfo.getFileName());
     }
 
     protected void onProgressUpdate(Integer... progress) {
@@ -84,9 +87,10 @@ public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
         EventBus.getDefault().post(downloadEventMessage);
     }
 
-    public void doAfterDownloadIsFinished() {
+    public void doAfterDownloadIsFinished(String fileName) {
         DownloadEventMessage downloadEventMessage = new DownloadEventMessage();
         downloadEventMessage.setFinishedInForced(downloadType == DownloadType.forced);
+        downloadEventMessage.setFileName(fileName);
         EventBus.getDefault().post(downloadEventMessage);
     }
 
@@ -114,13 +118,10 @@ public class DownloadFileCommand extends AsyncTask<Void, Integer, Void> {
     private void doWhenResponseIsSuccessful(HttpURLConnection httpURLConnection) throws
             IOException {
         InputStream is;
-        File directory = Environment.getExternalStorageDirectory();
-        directory.mkdirs();
-        if (directory.isDirectory()) {
-            is = httpURLConnection.getInputStream();
-            downloadFile(is, httpURLConnection, directory);
-            is.close();
-        }
+        File directory = context.getExternalFilesDir(null);
+        is = httpURLConnection.getInputStream();
+        downloadFile(is, httpURLConnection, directory);
+        is.close();
     }
 
     private void doWhenResponseIsUnsuccessful(HttpURLConnection httpURLConnection) {

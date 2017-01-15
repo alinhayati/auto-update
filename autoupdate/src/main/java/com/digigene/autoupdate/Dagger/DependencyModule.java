@@ -111,11 +111,11 @@ public class DependencyModule {
 
     @AutoUpdateScope
     @Provides
-    DownloadFileCommand provideDownloadFileCommand(
-            UpdateModel.UpdateFileInfo
-                    updateFileInfo, UpdateParams
-                    updateParams) {
-        return new DownloadFileCommand(updateFileInfo, updateParams);
+    DownloadFileCommand provideDownloadFileCommand(Context context,
+                                                   UpdateModel.UpdateFileInfo
+                                                           updateFileInfo, UpdateParams
+                                                           updateParams) {
+        return new DownloadFileCommand(context, updateFileInfo, updateParams);
     }
 
     @AutoUpdateScope
