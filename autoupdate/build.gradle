@@ -15,7 +15,7 @@ def licUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
 
 def majorNumber = 2
 def minorNumber = 1
-def patchNumber = 1
+def patchNumber = 2
 
 def _versionCode = 100 * majorNumber + 100 * minorNumber + patchNumber
 def _versionName = "$majorNumber" + "." + "$minorNumber" + "." + "$patchNumber"

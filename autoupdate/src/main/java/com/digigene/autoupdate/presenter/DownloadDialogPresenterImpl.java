@@ -18,9 +18,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v4.content.FileProvider;
 
+import com.digigene.autoupdate.BuildConfig;
 import com.digigene.autoupdate.EventBus.DownloadEventMessage;
 import com.digigene.autoupdate.R;
 import com.digigene.autoupdate.model.DownloadFileCommand;
@@ -90,8 +93,11 @@ public class DownloadDialogPresenterImpl implements DownloadDialogPresenter {
     private void doWhenDownloadIsFinishedInForcedMode(String fileName) {
         File directory = context.getExternalFilesDir(null);
         File file = new File(directory, fileName);
-        Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName(),
-                file);
+        Uri fileUri = Uri.fromFile(file);
+        if (Build.VERSION.SDK_INT >= 24) {
+            fileUri = FileProvider.getUriForFile(context, context.getPackageName(),
+                    file);
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW, fileUri);
         intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
         intent.setDataAndType(fileUri, "application/vnd.android" + ".package-archive");
