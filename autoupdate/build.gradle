@@ -22,7 +22,7 @@ def _versionName = "$majorNumber" + "." + "$minorNumber" + "." + "$patchNumber"
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 14
@@ -67,8 +67,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.google.dagger:dagger:2.+'
-    apt 'com.google.dagger:dagger-compiler:2.+'
+    compile 'com.google.dagger:dagger:2.7'
+    apt 'com.google.dagger:dagger-compiler:2.7'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
