@@ -50,7 +50,7 @@ public class ResponseActionFactory implements ResponseCallBack.Successful {
     }
 
     public Response makeResponse(HttpURLConnection httpURLConnection, Context context, Activity
-            activity) {
+            activity) throws IOException {
         int responseCode = 0;
         try {
             responseCode = httpURLConnection.getResponseCode();

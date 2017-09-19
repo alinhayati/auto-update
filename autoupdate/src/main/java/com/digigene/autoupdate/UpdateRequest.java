@@ -28,6 +28,7 @@ import com.digigene.autoupdate.model.UpdateParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
@@ -60,31 +61,39 @@ public class UpdateRequest {
         new UpdateCommand().execute();
     }
 
-    private class UpdateCommand extends AsyncTask<Void, Void, Void> {
+    private class UpdateCommand extends AsyncTask<Void, Void, Response> {
         private Response response;
         private HttpURLConnection httpURLConnection;
 
         @Override
-        protected Void doInBackground(Void... aVoid) {
+        protected Response doInBackground(Void... aVoid) {
             httpURLConnection = serverConnection.makeGetRequest();
-            response = new ResponseActionFactory(updateParams.getResUnsuccessful())
-                    .makeResponse(httpURLConnection, context, activity);
-            if (httpURLConnection != null) {
-                try {
+            try {
+                response = new ResponseActionFactory(updateParams.getResUnsuccessful())
+                        .makeResponse(httpURLConnection, context, activity);
+                if (httpURLConnection != null) {
                     httpURLConnection.disconnect();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+                return response;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
             }
-            return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            if (ServerConnection.isResponseSuccessful(response.getResponseCode())) {
-                updateFileInfo.extractDataFromJson(response, updateParams.getJsonKeys());
-                updateDialogTextsAttrs();
-                updateAction.update();
+        protected void onPostExecute(Response response) {
+            if (response != null) {
+                if (ServerConnection.isResponseSuccessful(response.getResponseCode())) {
+                    updateFileInfo.extractDataFromJson(response, updateParams.getJsonKeys());
+                    updateDialogTextsAttrs();
+                    updateAction.update();
+                } else {
+                    return;
+                }
             } else {
                 return;
             }
