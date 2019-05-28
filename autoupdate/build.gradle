@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 
 def devId = 'alinhayati'
 def devName = 'Ali Nemati Hayati'
@@ -21,12 +20,12 @@ def _versionCode = 100 * majorNumber + 100 * minorNumber + patchNumber
 def _versionName = "$majorNumber" + "." + "$minorNumber" + "." + "$patchNumber"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 24
+        minSdkVersion 26
+        targetSdkVersion 26
         versionCode _versionCode
         versionName "$_versionName"
     }
@@ -63,12 +62,15 @@ ext {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.google.dagger:dagger:2.+'
-    apt 'com.google.dagger:dagger-compiler:2.+'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.google.dagger:dagger:2.0'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
+
+
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
